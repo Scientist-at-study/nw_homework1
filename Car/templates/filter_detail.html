@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Cars by {{ filter_type }}: {{ filter_value }}</h2>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for car in cars %}
+        <div class="col">
+            <div class="card h-100">
+                {% if car.photo %}
+                    <img src="{{ car.photo.url }}" class="card-img-top" alt="{{ car.name }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{% url 'car_detail' car.id %}">{{ car.name }}</a>
+                    </h5>
+                    <p class="card-text"><strong>Brand:</strong> {{ car.brand }}</p>
+                    <p class="card-text"><strong>Color:</strong> {{ car.color }}</p>
+                    <p class="card-text"><strong>Price:</strong> ${{ car.price }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No cars found for this filter.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
