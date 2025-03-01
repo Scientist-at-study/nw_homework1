@@ -7,12 +7,20 @@ from .models import Brand, Color, Car, Comment
 admin.site.register(Brand)
 admin.site.register(Color)
 
+
+class CommentInline(admin.TabularInline):
+    model = Comment
+    extra = 0
+    readonly_fields = ('author', 'comment',)
+
 class CarAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "brand", "color", "price")
     list_display_links = ("id", "name")
     search_fields = ("name",)
     list_per_page = 10
     list_max_show_all = 10
+
+    inlines = [CommentInline]
 
     def get_image(self, obj):
         if obj.photo:
@@ -25,14 +33,3 @@ class CarAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Car, CarAdmin)
-
-
-class CommentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'car', 'author', 'created_at')
-    list_display_links = ('id', 'car')
-    search_fields = ('author', 'comment',)
-    list_filter = ('created_at',)
-    list_per_page = 10
-
-
-admin.site.register(Comment, CommentAdmin)

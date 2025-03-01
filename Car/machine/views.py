@@ -1,21 +1,26 @@
+import time
+
 from django.contrib.auth import login, authenticate, logout
 from .models import Brand, Color, Car, Comment
 from django.http import HttpRequest, HttpResponse
+from django.core.mail import send_mail
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-from .forms import CommentForm, RegisterForm, LoginForm
+from django.contrib.auth.models import User
+from .forms import CommentForm, RegisterForm, LoginForm, SendEmail
+from django.conf import settings
 
 
 # Create your views here.
 
 
 def home(request:HttpRequest):
-    brands = Brand.objects.all()
-    colors = Color.objects.all()
+    # brands = Brand.objects.all()
+    # colors = Color.objects.all()
     cars = Car.objects.all()
     context = {
-        "brands": brands,
-        "colors": colors,
+        # "brands": brands,
+        # "colors": colors,
         "cars": cars
     }
     return render(request, 'index.html', context)
@@ -53,13 +58,13 @@ def add_comment(request, car_id):
     else:
         form = CommentForm()
 
-    return render(request, "add_car.html", context={"form": form})
+    return render(request, "add_comment.html", context={"form": form})
 
 
 def update_comment(request, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id)
 
-    if comment.user_name != request.user.user_name:
+    if comment.username != request.user.username:
         messages.error(request, "You can only update your own comments!")
         return redirect("car_detail", car_id=comment.car.id)
 
@@ -84,7 +89,7 @@ def delete_comment(request, comment_id):
         messages.error(request, "To delete comments, please login!")
         return redirect("login")
 
-    if comment.user_name != request.user.user_name:
+    if comment.username != request.user.username:
         messages.error(request, "You can only delete your own comments!")
         return redirect("car_detail", car_id=comment.car.id)
 
@@ -160,3 +165,30 @@ def user_logout(request):
     logout(request)
     messages.warning(request, "You have been logged out of your account! ☹")
     return redirect("login")
+
+
+# ----------------------------------------SEND EMAIL--------------------------------------
+
+def send_message_to_email(request):
+    if request.method == 'POST':
+        form = SendEmail(data=request.POST)
+        if form.is_valid():
+            subject = form.cleaned_data.get("subject")
+            message = form.cleaned_data.get("message")
+            for user in User.objects.all():
+                mail = send_mail(
+                    subject=subject,
+                    message=message,
+                    from_email=settings.EMAIL_HOST_USER,
+                    recipient_list=[user.email]
+                )
+                time.sleep(0.5)
+                print(mail, "----------------------------")
+        messages.success(request, "Sending news!!!")
+        return redirect("home")
+    else:
+        form = SendEmail()
+    context = {
+        "form": form
+    }
+    return render(request, "send_mail.html", context)

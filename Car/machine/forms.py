@@ -47,3 +47,13 @@ class LoginForm(AuthenticationForm):
         "class": "form-control",
         "id": "form2Example22"
     }))
+
+
+class SendEmail(forms.Form):
+    subject = forms.CharField(max_length=250, widget=forms.TextInput(attrs={
+        "class": "form-control"
+    }))
+    message = forms.CharField(widget=forms.Textarea(attrs={
+        "class": "form-control",
+        "rows": 3
+    }))

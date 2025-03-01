@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
-
+{% load custom_tags %}
 {% block content %}
 
 <div class="container mt-4">
     <h2 class="text-center">Brands</h2>
     <div class="d-flex justify-content-around flex-wrap">
+        {% get_brands as brands %}
         {% for brand in brands %}
         <div>
             <a href="{% url 'cars_by_brand' brand.id %}" class="btn btn-outline-primary">
@@ -20,6 +21,7 @@
 <div class="container">
     <h2 class="text-center">Colors</h2>
     <div class="d-flex justify-content-around flex-wrap">
+        {% get_colors as colors %}
         {% for color in colors %}
         <div>
             <a href="{% url 'cars_by_color' color.id %}" class="btn btn-outline-secondary" style="background-color: {{ color.color }};">

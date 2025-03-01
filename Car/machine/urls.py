@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (home, add_comment, update_comment, delete_comment,
                     cars_by_color, cars_by_brand, car_detail, user_register,
-                    user_login, user_logout)
+                    user_login, user_logout, send_message_to_email)
 
 urlpatterns = [
     path('', home, name="home"),
@@ -13,6 +13,8 @@ urlpatterns = [
     path('cars/brand/<int:brand_id>', cars_by_brand, name="cars_by_brand"),
     path('register/', user_register, name='register'),
     path('login/', user_login, name='login'),
-    path('logout/', user_logout, name='logout')
+    path('logout/', user_logout, name='logout'),
+
+    path('send-message/', send_message_to_email, name='send_message_to_email'),
 
 ]
