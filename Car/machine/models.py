@@ -1,4 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.urls import reverse_lazy
+
 
 # Create your models here.
 
@@ -36,12 +39,15 @@ class Car(models.Model):
 
 class Comment(models.Model):
     car = models.ForeignKey("Car", on_delete=models.CASCADE, related_name="comments")
-    author = models.CharField(max_length=100, verbose_name="Author")
+    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Author")
     comment = models.TextField(verbose_name="Comment by author")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.author} - {self.car}"
+
+    def get_absolute_url(self):
+        return reverse_lazy('car_detail', kwargs={"car_id": self.car.id})
 
     class Meta:
         verbose_name = "Comment"

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+{% block content %}
+
+<!--{{ my_brands }}-->
+
+<div class="container mt-4">
+    <h2 class="text-center">Brands</h2>
+    <div class="d-flex justify-content-around flex-wrap">
+        {% get_brands as brands %}
+        {% for brand in brands %}
+        <div>
+            <a href="{% url 'cars_by_brand' brand.id %}" class="btn btn-outline-primary">
+                {{ brand.title }}
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<hr>
+
+<div class="container">
+    <h2 class="text-center">Colors</h2>
+    <div class="d-flex justify-content-around flex-wrap">
+        {% get_colors as colors %}
+        {% for color in colors %}
+        <div>
+            <a href="{% url 'cars_by_color' color.id %}" class="btn btn-outline-secondary" style="background-color: {{ color.color }};">
+                {{ color.color }}
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<hr>
+
+<div class="container py-5">
+    <h2 class="text-center">Available Cars</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for car in object_list %}
+        <div class="col">
+            <div class="card h-100">
+                {% if car.photo %}
+                <img src="{{ car.photo.url }}" class="card-img-top" alt="{{ car.name }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{% url 'car_detail' car.id %}">{{ car.name }}</a>
+                    </h5>
+                    <p class="card-text"><strong>Brand:</strong> {{ car.brand }}</p>
+                    <p class="card-text"><strong>Color:</strong> {{ car.color }}</p>
+                    <p class="card-text"><strong>Price:</strong> ${{ car.price }}</p>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'car_detail' car.id %}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center">No cars available.</p>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock content %}

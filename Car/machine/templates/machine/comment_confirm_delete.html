@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h3>Confirm delete </h3>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit"> Yes </button>
+</form>
+<a href="{% url 'car_detail' car.pk %}"></a>
+</body>
+</html>
